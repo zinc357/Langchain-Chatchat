@@ -28,7 +28,7 @@ PROMPT_TEMPLATE = """【指令】你现在是一名客服人员，请根据已�
 【问题】{question}"""
 
 
-def custom_chat(query: str = Body(..., description="用户输入", examples=["我不会了，提醒我一下"]),
+def customer_service_chat(query: str = Body(..., description="用户输入", examples=["我不会了，提醒我一下"]),
                 knowledge_base_name: str = Body(..., description="知识库名称", examples=["samples"]),
                 top_k: int = Body(VECTOR_SEARCH_TOP_K, description="匹配向量数"),
                 score_threshold: float = Body(SCORE_THRESHOLD,
@@ -52,7 +52,7 @@ def custom_chat(query: str = Body(..., description="用户输入", examples=["�
 
     history = [History(**h) if isinstance(h, dict) else h for h in history]
 
-    async def custom_chat_iterator(query: str,
+    async def customer_service_chat_iterator(query: str,
                                    kb: KBService,
                                    top_k: int,
                                    history: Optional[List[History]],
@@ -107,5 +107,5 @@ def custom_chat(query: str = Body(..., description="用户输入", examples=["�
 
         await task
 
-    return StreamingResponse(custom_chat_iterator(query, kb, top_k, history),
+    return StreamingResponse(customer_service_chat_iterator(query, kb, top_k, history),
                              media_type="text/event-stream")
