@@ -11,13 +11,17 @@ from langchain.callbacks import AsyncIteratorCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 
-from configs.model_config import (llm_model_dict, LLM_MODEL, PROMPT_TEMPLATE,
+from configs.model_config import (llm_model_dict, LLM_MODEL,
                                   VECTOR_SEARCH_TOP_K, SCORE_THRESHOLD)
 from server.chat.utils import History
 from server.chat.utils import wrap_done
 from server.knowledge_base.kb_doc_api import search_docs
 from server.knowledge_base.kb_service.base import KBService, KBServiceFactory
 from server.utils import BaseResponse
+
+# 基于本地知识问答的提示词模版
+PROMPT_TEMPLATE = """【指令】你现在是一名客服人员，请根据已知信息，使用客服人员的语气来回答问题。如果无法从中得到答案，
+请说 “根据已知信息无法回答该问题，请咨询人工客服”，不允许在答案中添加编造成分，答案请使用中文。 """
 
 
 def custom_chat(query: str = Body(..., description="用户输入", examples=["我不会了，提醒我一下"]),
