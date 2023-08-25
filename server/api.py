@@ -12,7 +12,7 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from server.chat import (chat, knowledge_base_chat, openai_chat,
-                         search_engine_chat)
+                         custom_chat, search_engine_chat)
 from server.knowledge_base.kb_api import list_kbs, create_kb, delete_kb
 from server.knowledge_base.kb_doc_api import (list_docs, upload_doc, delete_doc,
                                               update_doc, download_doc, recreate_vector_store,
@@ -61,6 +61,10 @@ def create_app():
     app.post("/chat/knowledge_base_chat",
              tags=["Chat"],
              summary="与知识库对话")(knowledge_base_chat)
+
+    app.post("/chat/custom_chat",
+             tags=["Chat"],
+             summary="自定义对话")(custom_chat)
 
     app.post("/chat/search_engine_chat",
              tags=["Chat"],
