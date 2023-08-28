@@ -7,7 +7,7 @@ from configs.model_config import (
     KB_ROOT_PATH,
     CHUNK_SIZE,
     OVERLAP_SIZE,
-    ZH_TITLE_ENHANCE
+    ZH_TITLE_ENHANCE, OCR_LANGUAGES
 )
 from functools import lru_cache
 import importlib
@@ -100,7 +100,7 @@ class KnowledgeFile:
             document_loaders_module = importlib.import_module('langchain.document_loaders')
             DocumentLoader = getattr(document_loaders_module, "UnstructuredFileLoader")
         if self.document_loader_name == "UnstructuredFileLoader":
-            loader = DocumentLoader(self.filepath, autodetect_encoding=True, ocr_languages="chi_sim")
+            loader = DocumentLoader(self.filepath, autodetect_encoding=True, ocr_languages=OCR_LANGUAGES)
         else:
             loader = DocumentLoader(self.filepath)
 
