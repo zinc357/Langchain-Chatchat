@@ -100,7 +100,7 @@ class KnowledgeFile:
             document_loaders_module = importlib.import_module('langchain.document_loaders')
             DocumentLoader = getattr(document_loaders_module, "UnstructuredFileLoader")
         if self.document_loader_name == "UnstructuredFileLoader":
-            loader = DocumentLoader(self.filepath, autodetect_encoding=True)
+            loader = DocumentLoader(self.filepath, autodetect_encoding=True, ocr_languages="chi_sim")
         else:
             loader = DocumentLoader(self.filepath)
 
