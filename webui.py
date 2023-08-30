@@ -15,21 +15,22 @@ api = ApiRequest(base_url="http://localhost:7861", no_remote_api=False)
 
 if __name__ == "__main__":
     st.set_page_config(
-        "Langchain-Chatchat WebUI",
+        "palacesun",
         os.path.join("img", "chatchat_icon_blue_square_v2.png"),
         initial_sidebar_state="expanded",
-        menu_items={
-            'Get Help': 'https://github.com/chatchat-space/Langchain-Chatchat',
-            'Report a bug': "https://github.com/chatchat-space/Langchain-Chatchat/issues",
-            'About': f"""欢迎使用 Langchain-Chatchat WebUI {VERSION}！"""
-        }
+        # menu_items={
+        #     'Get Help': 'https://github.com/chatchat-space/Langchain-Chatchat',
+        #     'Report a bug': "https://github.com/chatchat-space/Langchain-Chatchat/issues",
+        #     'About': f"""欢迎使用 Langchain-Chatchat WebUI {VERSION}！"""
+        # }
     )
 
     if not chat_box.chat_inited:
-        st.toast(
-            f"欢迎使用 [`Langchain-Chatchat`](https://github.com/chatchat-space/Langchain-Chatchat) ! \n\n"
-            f"当前使用模型`{LLM_MODEL}`, 您可以开始提问了."
-        )
+        pass
+        # st.toast(
+        #     f"欢迎使用 [`Langchain-Chatchat`](https://github.com/chatchat-space/Langchain-Chatchat) ! \n\n"
+        #     f"当前使用模型`{LLM_MODEL}`, 您可以开始提问了."
+        # )
 
     pages = {
         "对话": {
