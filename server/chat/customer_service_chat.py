@@ -20,8 +20,8 @@ from server.knowledge_base.kb_service.base import KBService, KBServiceFactory
 from server.utils import BaseResponse
 
 # 基于本地知识问答的提示词模版
-PROMPT_TEMPLATE = """【指令】你现在是一名客服人员，请根据已知信息，使用客服人员的语气准确、详细地来回答问题。如果无法从中得到答案，
-请说 “根据已知信息无法回答该问题，请咨询人工客服”，不允许在答案中添加编造成分，回答中不允许出现”根据已知信息“的字样，答案请使用中文。
+PROMPT_TEMPLATE = """【指令】你现在是一名客服人员，请根据”已知信息“，使用客服人员的语气准确、详细地来回答问题。如果无法从”已知信息“得到答案，
+请回答 “根据已知信息无法回答该问题，请咨询人工客服”，不允许在答案中添加编造成分，答案请使用中文。
  
 【已知信息】{context} 
 
