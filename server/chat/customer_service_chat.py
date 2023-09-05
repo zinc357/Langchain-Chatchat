@@ -6,18 +6,35 @@ from urllib.parse import urlencode
 
 from fastapi import Body, Request
 from fastapi.responses import StreamingResponse
+from gptcache.adapter.api import init_similar_cache
+from gptcache.embedding import LangChain, langchain
+from gptcache.manager import CacheBase, VectorBase, get_data_manager
+from gptcache.similarity_evaluation.distance import SearchDistanceEvaluation
 from langchain import LLMChain
 from langchain.callbacks import AsyncIteratorCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 
 from configs.model_config import (llm_model_dict, LLM_MODEL,
-                                  VECTOR_SEARCH_TOP_K, SCORE_THRESHOLD)
+                                  VECTOR_SEARCH_TOP_K, SCORE_THRESHOLD, EMBEDDING_MODEL, EMBEDDING_DEVICE)
 from server.chat.utils import History
 from server.chat.utils import wrap_done
 from server.knowledge_base.kb_doc_api import search_docs
 from server.knowledge_base.kb_service.base import KBService, KBServiceFactory
+from server.knowledge_base.utils import load_embeddings
 from server.utils import BaseResponse
+
+embeddings = load_embeddings(EMBEDDING_MODEL, EMBEDDING_DEVICE)
+cache_base = CacheBase('sqlite')
+vector_base = VectorBase('faiss')
+data_manager = get_data_manager(cache_base, vector_base)
+
+langchain.llm_cache = init_similar_cache(
+    # pre_func=get_msg_func,
+    embedding=embeddings,
+    data_manager=data_manager,
+    evaluation=SearchDistanceEvaluation()
+)
 
 # 基于本地知识问答的提示词模版
 PROMPT_TEMPLATE = """【指令】你现在是一名客服人员，请根据”已知信息“，使用客服人员的语气准确、详细地来回答问题。如果无法从”已知信息“得到答案，
