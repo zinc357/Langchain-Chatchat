@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 from fastapi import Body, Request
 from fastapi.responses import StreamingResponse
 from gptcache import cache
+from gptcache.adapter.langchain_models import LangChainChat, LangChainLLMs
 from gptcache.manager import CacheBase, VectorBase, get_data_manager
 from gptcache.embedding import LangChain
 from gptcache.similarity_evaluation.distance import SearchDistanceEvaluation
@@ -98,7 +99,9 @@ def customer_service_chat(query: str = Body(..., description="用户输入", exa
         chat_prompt = ChatPromptTemplate.from_messages(
             [i.to_msg_tuple() for i in history] + [("human", PROMPT_TEMPLATE)])
 
-        chain = LLMChain(prompt=chat_prompt, llm=model)
+        # chain = LLMChain(prompt=chat_prompt, llm=model)
+        llm = LangChainLLMs(llm=model)
+        chain = LLMChain(llm=llm, prompt=chat_prompt)
 
         # Begin a task that runs in the background.
         task = asyncio.create_task(wrap_done(
