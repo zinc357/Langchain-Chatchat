@@ -28,24 +28,24 @@ from server.utils import BaseResponse
 
 
 # get the content(only question) form the prompt to cache
-def get_msg_func(data, **_):
-    content = data.get("messages")[-1].content
-    print("get_msg_func: ", content)
-    return content
-
-
-lc = LangChain(embeddings=load_embeddings(EMBEDDING_MODEL, EMBEDDING_DEVICE))
-cache_base = CacheBase('sqlite')
-vector_base = VectorBase('faiss', dimension=lc.dimension)
-data_manager = get_data_manager(cache_base, vector_base)
-cache.init(
-    pre_embedding_func=get_msg_func,
-    embedding_func=lc.to_embeddings,
-    data_manager=data_manager,
-    similarity_evaluation=SearchDistanceEvaluation()
-)
-cache.set_openai_key()
-langchain.llm_cache = cache
+# def get_msg_func(data, **_):
+#     content = data.get("messages")[-1].content
+#     print("get_msg_func: ", content)
+#     return content
+#
+#
+# lc = LangChain(embeddings=load_embeddings(EMBEDDING_MODEL, EMBEDDING_DEVICE))
+# cache_base = CacheBase('sqlite')
+# vector_base = VectorBase('faiss', dimension=lc.dimension)
+# data_manager = get_data_manager(cache_base, vector_base)
+# cache.init(
+#     pre_embedding_func=get_msg_func,
+#     embedding_func=lc.to_embeddings,
+#     data_manager=data_manager,
+#     similarity_evaluation=SearchDistanceEvaluation()
+# )
+# cache.set_openai_key()
+# langchain.llm_cache = cache
 
 # 基于本地知识问答的提示词模版
 PROMPT_TEMPLATE = """【指令】你现在是一名客服人员，请根据”已知信息“，使用客服人员的语气准确、详细地来回答问题。如果无法从”已知信息“得到答案，
