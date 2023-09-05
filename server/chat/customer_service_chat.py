@@ -34,7 +34,7 @@ def get_msg_func(data, **_):
 
 lc = LangChain(embeddings=load_embeddings(EMBEDDING_MODEL, EMBEDDING_DEVICE))
 cache_base = CacheBase('sqlite')
-vector_base = VectorBase('faiss', dimension=None)
+vector_base = VectorBase('faiss', dimension=lc.dimension)
 data_manager = get_data_manager(cache_base, vector_base)
 cache.init(
     pre_embedding_func=get_msg_func,
