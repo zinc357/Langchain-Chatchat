@@ -100,9 +100,6 @@ def customer_service_chat(query: str = Body(..., description="用户输入", exa
             [i.to_msg_tuple() for i in history] + [("human", PROMPT_TEMPLATE)])
 
         chain = LLMChain(prompt=chat_prompt, llm=model)
-        chat = LangChainChat(chat=model)
-        chain.llm = chat
-
 
         # Begin a task that runs in the background.
         task = asyncio.create_task(wrap_done(
