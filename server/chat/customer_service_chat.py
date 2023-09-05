@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import json
 import os
 from typing import AsyncIterable, List, Optional
@@ -7,45 +8,33 @@ from urllib.parse import urlencode
 import langchain
 from fastapi import Body, Request
 from fastapi.responses import StreamingResponse
-from gptcache import cache
-from gptcache.adapter.langchain_models import LangChainChat
-from gptcache.manager import CacheBase, VectorBase, get_data_manager
-from gptcache.embedding import LangChain
-from gptcache.similarity_evaluation.distance import SearchDistanceEvaluation
+from gptcache import Cache
+from gptcache.adapter.api import init_similar_cache
 from langchain import LLMChain
+from langchain.cache import GPTCache
 from langchain.callbacks import AsyncIteratorCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 
 from configs.model_config import (llm_model_dict, LLM_MODEL,
-                                  VECTOR_SEARCH_TOP_K, SCORE_THRESHOLD, EMBEDDING_MODEL, EMBEDDING_DEVICE)
+                                  VECTOR_SEARCH_TOP_K, SCORE_THRESHOLD)
 from server.chat.utils import History
 from server.chat.utils import wrap_done
 from server.knowledge_base.kb_doc_api import search_docs
 from server.knowledge_base.kb_service.base import KBService, KBServiceFactory
-from server.knowledge_base.utils import load_embeddings
 from server.utils import BaseResponse
 
 
-# get the content(only question) form the prompt to cache
-# def get_msg_func(data, **_):
-#     content = data.get("messages")[-1].content
-#     print("get_msg_func: ", content)
-#     return content
-#
-#
-# lc = LangChain(embeddings=load_embeddings(EMBEDDING_MODEL, EMBEDDING_DEVICE))
-# cache_base = CacheBase('sqlite')
-# vector_base = VectorBase('faiss', dimension=lc.dimension)
-# data_manager = get_data_manager(cache_base, vector_base)
-# cache.init(
-#     pre_embedding_func=get_msg_func,
-#     embedding_func=lc.to_embeddings,
-#     data_manager=data_manager,
-#     similarity_evaluation=SearchDistanceEvaluation()
-# )
-# cache.set_openai_key()
-# langchain.llm_cache = cache
+def get_hashed_name(name):
+    return hashlib.sha256(name.encode()).hexdigest()
+
+
+def init_gptcache(cache_obj: Cache, llm: str):
+    hashed_llm = get_hashed_name(llm)
+    init_similar_cache(cache_obj=cache_obj, data_dir=f"similar_cache_{hashed_llm}")
+
+
+langchain.llm_cache = GPTCache(init_gptcache)
 
 # 基于本地知识问答的提示词模版
 PROMPT_TEMPLATE = """【指令】你现在是一名客服人员，请根据”已知信息“，使用客服人员的语气准确、详细地来回答问题。如果无法从”已知信息“得到答案，
